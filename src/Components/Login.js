@@ -1,7 +1,13 @@
+import { useState } from 'react';
 import Header from './Header';
 
-
 const Login = () => {
+
+   const [SignInVar,setSignInVar]= useState(true)
+
+    const handleSignUp = () => {
+        setSignInVar(!SignInVar);
+    }
 
     return (
       <div>
@@ -15,24 +21,40 @@ const Login = () => {
         </div>
 
         <form className="w-3/12 absolute p-12 bg-black mt-36  right-0 left-0 mx-auto text-white bg-opacity-80">
-          <h1 className="font-bold text-3xl py-4 mx-1">Sign In</h1>
+          <h1 className="font-bold text-3xl py-4 mx-1">
+            {SignInVar === true ? "Sign In" : "Sign Up"}
+                </h1>
+                
+        {!SignInVar&&<input
+            type="text"
+            placeholder="Full Name"
+            className="bg-white p-4 my-4 w-full rounded-lg bg-gray-700"
+                />}
+                
 
           <input
             type="email"
             placeholder="Email or mobile Number"
             className="bg-white p-4 my-4 w-full rounded-lg bg-gray-700"
           />
+
+          
+
           <input
             type="password"
-            placeholder="password"
+            placeholder="Password"
             className="p-4 my-4 w-full rounded-lg  bg-gray-700"
-          />
-          <button className="border border-black border-solid px-2 rounded-lg p-4 my-6 bg-red-600 w-full">
-            Sign In
-          </button>
+                />
                 
-           <p className ="py-4">New to Netflix? Sign Up Now</p>
-        
+          <button className="border border-black border-solid px-2 rounded-lg p-4 my-6 bg-red-600 w-full">
+            {SignInVar === true ? "Sign In" : "Sign Up"}
+          </button>
+
+          <p className="py-4 cursor-pointer" onClick={handleSignUp}>
+            {SignInVar === true
+              ? "New to Netflix? Sign Up Now "
+              : "Already Registered ? Sign In Now."}
+          </p>
         </form>
       </div>
     );
