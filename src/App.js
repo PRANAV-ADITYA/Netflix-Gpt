@@ -1,10 +1,8 @@
-import './App.css';
+import Body from "../src/Components/Body"; 
 
 function App() {
   return (
-    <div className="text-3xl font-bold text-green-400 ">
-     Namaste Everyone!
-    </div>
+    <Body/>
   );
 }
 
