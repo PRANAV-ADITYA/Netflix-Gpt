@@ -1,6 +1,7 @@
 import Body from "../src/Components/Body"; 
 
-function App() {
+const App = () => {
+  
   return (
     <Body/>
   );
