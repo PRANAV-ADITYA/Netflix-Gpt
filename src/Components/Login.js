@@ -1,6 +1,9 @@
 import { useRef, useState } from 'react';
 import Header from './Header';
-import { checkValidData } from '../utils/Validate';
+
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from '../utils/Firebase';
+
 
 const Login = () => {
 
@@ -9,9 +12,21 @@ const Login = () => {
 
     const email = useRef(null);
     const password = useRef(null);
-    const Name = useRef(null);
-
     
+  
+  const checkValidData = (email, password) => {
+    const isEmailValid =
+      /^([a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})$/.test(email);
+    const isPasswordValid =
+      /^(?=.*\d)(?=.* [a - z])(?=.* [A - Z])(?=.* [a - zA - Z]).{ 8,} $/.test(password);
+
+    if (!isEmailValid) return "Email Id is not valid";
+
+    if (!isPasswordValid) return "Password is not valid ";
+
+    return null;
+  };
+
 
     const handleSignUp = () => {
         setSignInVar(!SignInVar);
@@ -20,12 +35,29 @@ const Login = () => {
     const handleButtonClick = () => {
         // Validate the form data
 
-        const message = checkValidData(email.current.value, password.current.value,Name.current.value);
+        const message = checkValidData(email.current.value, password.current.value);
         setErrorMessage(message);
+      
+      if (message === null) {
+         //Sign In / Sign Up
+        if (!SignInVar) { 
+          // Sign Up Logic 
+          createUserWithEmailAndPassword(auth ,email.current.value, password.current.value)
+            .then((userCredential) => {
+              const user = userCredential.user;
+              console.log(user);
+            })
+            .catch((error) => {
+              const errorCode = error.code;
+              const errorMessage = error.message;
+              setErrorMessage(errorCode + "-" + errorMessage);
+            });
 
-
-        //Sign In / Sign Up
-
+        } else {
+          // Sign In Logic
+        }
+        
+      }
 
     }
 
