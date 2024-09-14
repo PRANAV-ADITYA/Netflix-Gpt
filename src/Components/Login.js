@@ -1,8 +1,7 @@
 import { useRef, useState } from 'react';
 import Header from './Header';
-
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from '../utils/Firebase';
+import {createUserWithEmailAndPassword,signInWithEmailAndPassword,} from "firebase/auth";
+import { auth } from "../utils/Firebase";
 
 
 const Login = () => {
@@ -12,13 +11,11 @@ const Login = () => {
 
     const email = useRef(null);
     const password = useRef(null);
-    
   
   const checkValidData = (email, password) => {
     const isEmailValid =
       /^([a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})$/.test(email);
-    const isPasswordValid =
-      /^(?=.*\d)(?=.* [a - z])(?=.* [A - Z])(?=.* [a - zA - Z]).{ 8,} $/.test(password);
+    const isPasswordValid = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,15}$/.test(password);
 
     if (!isEmailValid) return "Email Id is not valid";
 
@@ -33,31 +30,43 @@ const Login = () => {
     }
 
     const handleButtonClick = () => {
-        // Validate the form data
+    
+      const message = checkValidData(email.current.value, password.current.value);
+      setErrorMessage(message);
 
-        const message = checkValidData(email.current.value, password.current.value);
-        setErrorMessage(message);
-      
-      if (message === null) {
-         //Sign In / Sign Up
-        if (!SignInVar) { 
-          // Sign Up Logic 
-          createUserWithEmailAndPassword(auth ,email.current.value, password.current.value)
-            .then((userCredential) => {
-              const user = userCredential.user;
-              console.log(user);
-            })
-            .catch((error) => {
-              const errorCode = error.code;
-              const errorMessage = error.message;
-              setErrorMessage(errorCode + "-" + errorMessage);
-            });
+      if (message) return;
 
-        } else {
-          // Sign In Logic
-        }
-        
+      if (!SignInVar) {
+        createUserWithEmailAndPassword(auth, email.current.value, password.current.value)
+          .then((userCredential) => {
+            
+            const user = userCredential.user;
+            console.log(user);
+          })
+          .catch((error) => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            setErrorMessage(errorCode+"-"+errorMessage);
+          });
+
+
+      } else {
+        // Sign In Logic
+
+        signInWithEmailAndPassword(auth, email.current.value, password.current.value)
+          .then((userCredential) => {
+            const user = userCredential.user;
+            console.log(user);
+            
+          })
+          .catch((error) => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            setErrorMessage(errorCode + "-" + errorMessage);
+          });
+
       }
+  
 
     }
 
